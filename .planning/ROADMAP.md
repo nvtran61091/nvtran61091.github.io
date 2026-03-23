@@ -80,7 +80,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/2 | Not started | - |
+| 1. Foundation | 1/2 | In Progress|  |
 | 2. Core Game Loop | 0/? | Not started | - |
 | 3. Timer Subsystem | 0/? | Not started | - |
 | 4. Polish & Delight | 0/? | Not started | - |

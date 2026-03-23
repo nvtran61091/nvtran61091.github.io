@@ -1,3 +1,17 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: unknown
+last_updated: "2026-03-23T16:29:15.194Z"
+progress:
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 2
+  completed_plans: 1
+  percent: 50
+---
+
 # STATE — Kids Math Game
 
 ## Project Reference
@@ -13,14 +27,14 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Foundation |
-| **Active plan** | None (not yet planned) |
-| **Status** | Not started |
-| **Last action** | Roadmap created |
+| **Active plan** | 01-01 (Task 2 checkpoint: human-verify) |
+| **Status** | In progress — awaiting browser verification |
+| **Last action** | feat(01-01) 2ee2fa7: built complete index.html — checkpoint:human-verify |
 
 ```
-Progress: [░░░░░░░░░░░░░░░░░░░░] 0%
+Progress: [█████░░░░░] 50%
 
-Phase 1: Foundation          [ ] Not started
+Phase 1: Foundation          [~] In progress — 01-01 at checkpoint (1 plan of 2 done after verify)
 Phase 2: Core Game Loop      [ ] Not started
 Phase 3: Timer Subsystem     [ ] Not started
 Phase 4: Polish & Delight    [ ] Not started
@@ -38,6 +52,7 @@ Phase 4: Polish & Delight    [ ] Not started
 | Requirements mapped | 32/32 |
 
 ---
+| Phase 01-foundation P01 | 2 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -53,6 +68,7 @@ Phase 4: Polish & Delight    [ ] Not started
 | `UIRenderer.updateTimer()` separate from `renderQuestion()` | Prevents resetting child's typed answer on every timer tick |
 | Single canonical `resetGame()` function | Scattered initialization causes bugs (greyed input, stale score) on Play Again |
 | Form submit event only (no onclick on button) | Prevents double puzzle advancement from mixed event binding |
+| Filter zero-answer puzzles (`answer === 0` → `continue`) | Decided in Phase 1 Plan 01: young children may not recognize 0 as valid; filtering avoids confusion |
 
 ### Architecture Notes
 
@@ -74,7 +90,7 @@ Phase 4: Polish & Delight    [ ] Not started
 
 ### Open Questions
 
-- [ ] Filter zero-answer puzzles or allow them? (affects `PuzzleGenerator` — decide in Phase 1)
+- [x] Filter zero-answer puzzles or allow them? → **DECIDED (01-01):** Filter them — `if (answer === 0) continue`
 - [ ] Implement `visibilitychange` timer pause in Phase 3 or document as known limitation?
 
 ---

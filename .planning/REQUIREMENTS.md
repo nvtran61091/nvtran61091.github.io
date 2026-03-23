@@ -15,11 +15,11 @@
 
 ### Puzzle Generation
 
-- [ ] **PUZZLE-01**: Each puzzle is a random addition or subtraction expression
-- [ ] **PUZZLE-02**: All puzzle results are non-negative integers less than 20
-- [ ] **PUZZLE-03**: Subtraction operands are constrained so the result is never negative (b ≤ a)
-- [ ] **PUZZLE-04**: 10 puzzles are generated fresh each game session
-- [ ] **PUZZLE-05**: Puzzle operands use only non-negative integers
+- [x] **PUZZLE-01**: Each puzzle is a random addition or subtraction expression
+- [x] **PUZZLE-02**: All puzzle results are non-negative integers less than 20
+- [x] **PUZZLE-03**: Subtraction operands are constrained so the result is never negative (b ≤ a)
+- [x] **PUZZLE-04**: 10 puzzles are generated fresh each game session
+- [x] **PUZZLE-05**: Puzzle operands use only non-negative integers
 
 ### Input
 
@@ -40,16 +40,16 @@
 ### UI & Visual Design
 
 - [ ] **UI-01**: Fun, kid-friendly emoji and symbols used throughout (e.g., ⭐ 🎉 😊 🔢)
-- [ ] **UI-02**: Large, readable fonts suitable for young children (≥ 16px base, puzzle text much larger)
-- [ ] **UI-03**: Touch targets (numpad buttons) are large enough for small fingers (≥ 44px)
+- [x] **UI-02**: Large, readable fonts suitable for young children (≥ 16px base, puzzle text much larger)
+- [x] **UI-03**: Touch targets (numpad buttons) are large enough for small fingers (≥ 44px)
 - [ ] **UI-04**: Correct answer triggers a visible positive feedback animation/flash
 - [ ] **UI-05**: Results screen shows score in a celebratory way (e.g., star rating or big emoji)
-- [ ] **UI-06**: Layout works on both mobile phones and desktop browsers
+- [x] **UI-06**: Layout works on both mobile phones and desktop browsers
 
 ### Deployment
 
-- [ ] **DEPLOY-01**: Entire game is self-contained in a single `index.html` file
-- [ ] **DEPLOY-02**: No external dependencies (no CDN links, no npm packages)
+- [x] **DEPLOY-01**: Entire game is self-contained in a single `index.html` file
+- [x] **DEPLOY-02**: No external dependencies (no CDN links, no npm packages)
 - [ ] **DEPLOY-03**: Game runs correctly when served from GitHub Pages
 
 ---
@@ -86,11 +86,11 @@
 | GAME-06 | Phase 2: Core Game Loop | Pending |
 | GAME-07 | Phase 2: Core Game Loop | Pending |
 | GAME-08 | Phase 2: Core Game Loop | Pending |
-| PUZZLE-01 | Phase 1: Foundation | Pending |
-| PUZZLE-02 | Phase 1: Foundation | Pending |
-| PUZZLE-03 | Phase 1: Foundation | Pending |
-| PUZZLE-04 | Phase 1: Foundation | Pending |
-| PUZZLE-05 | Phase 1: Foundation | Pending |
+| PUZZLE-01 | Phase 1: Foundation | Complete |
+| PUZZLE-02 | Phase 1: Foundation | Complete |
+| PUZZLE-03 | Phase 1: Foundation | Complete |
+| PUZZLE-04 | Phase 1: Foundation | Complete |
+| PUZZLE-05 | Phase 1: Foundation | Complete |
 | INPUT-01 | Phase 2: Core Game Loop | Pending |
 | INPUT-02 | Phase 2: Core Game Loop | Pending |
 | INPUT-03 | Phase 2: Core Game Loop | Pending |
@@ -102,13 +102,13 @@
 | TIMER-04 | Phase 3: Timer Subsystem | Pending |
 | TIMER-05 | Phase 3: Timer Subsystem | Pending |
 | UI-01 | Phase 2: Core Game Loop | Pending |
-| UI-02 | Phase 1: Foundation | Pending |
-| UI-03 | Phase 1: Foundation | Pending |
+| UI-02 | Phase 1: Foundation | Complete |
+| UI-03 | Phase 1: Foundation | Complete |
 | UI-04 | Phase 4: Polish & Delight | Pending |
 | UI-05 | Phase 4: Polish & Delight | Pending |
-| UI-06 | Phase 1: Foundation | Pending |
-| DEPLOY-01 | Phase 1: Foundation | Pending |
-| DEPLOY-02 | Phase 1: Foundation | Pending |
+| UI-06 | Phase 1: Foundation | Complete |
+| DEPLOY-01 | Phase 1: Foundation | Complete |
+| DEPLOY-02 | Phase 1: Foundation | Complete |
 | DEPLOY-03 | Phase 1: Foundation | Pending |
 
 ---

@@ -29,7 +29,11 @@ A fun, browser-based math game for young children. 10 random addition/subtractio
   3. All four game screens (start, question, game-over, results) render with correct layout on both a mobile phone and a desktop browser
   4. Numpad buttons measure at least 44 × 44px in DevTools and are visually obvious on a phone-sized viewport
   5. Pushing `index.html` to GitHub Pages serves the game with no errors in under 60 seconds
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Build complete index.html: CSS design system, PuzzleGenerator, all 4 static screens
+- [ ] 01-02-PLAN.md — Deploy to GitHub Pages and verify live URL
 
 ---
 
@@ -76,7 +80,7 @@ A fun, browser-based math game for young children. 10 random addition/subtractio
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/? | Not started | - |
+| 1. Foundation | 0/2 | Not started | - |
 | 2. Core Game Loop | 0/? | Not started | - |
 | 3. Timer Subsystem | 0/? | Not started | - |
 | 4. Polish & Delight | 0/? | Not started | - |

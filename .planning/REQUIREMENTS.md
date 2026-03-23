@@ -76,14 +76,40 @@
 
 ## Traceability
 
-| REQ-ID | Phase |
-|--------|-------|
-| GAME-01–08 | Phase 2 (Core Game Loop) |
-| PUZZLE-01–05 | Phase 1 (Foundation) |
-| INPUT-01–05 | Phase 1 (Foundation) |
-| TIMER-01–05 | Phase 3 (Timer Subsystem) |
-| UI-01–06 | Phase 1 (Foundation) + Phase 4 (Polish) |
-| DEPLOY-01–03 | Phase 1 (Foundation) |
+| REQ-ID | Phase | Status |
+|--------|-------|--------|
+| GAME-01 | Phase 2: Core Game Loop | Pending |
+| GAME-02 | Phase 2: Core Game Loop | Pending |
+| GAME-03 | Phase 2: Core Game Loop | Pending |
+| GAME-04 | Phase 2: Core Game Loop | Pending |
+| GAME-05 | Phase 3: Timer Subsystem | Pending |
+| GAME-06 | Phase 2: Core Game Loop | Pending |
+| GAME-07 | Phase 2: Core Game Loop | Pending |
+| GAME-08 | Phase 2: Core Game Loop | Pending |
+| PUZZLE-01 | Phase 1: Foundation | Pending |
+| PUZZLE-02 | Phase 1: Foundation | Pending |
+| PUZZLE-03 | Phase 1: Foundation | Pending |
+| PUZZLE-04 | Phase 1: Foundation | Pending |
+| PUZZLE-05 | Phase 1: Foundation | Pending |
+| INPUT-01 | Phase 2: Core Game Loop | Pending |
+| INPUT-02 | Phase 2: Core Game Loop | Pending |
+| INPUT-03 | Phase 2: Core Game Loop | Pending |
+| INPUT-04 | Phase 2: Core Game Loop | Pending |
+| INPUT-05 | Phase 2: Core Game Loop | Pending |
+| TIMER-01 | Phase 3: Timer Subsystem | Pending |
+| TIMER-02 | Phase 3: Timer Subsystem | Pending |
+| TIMER-03 | Phase 3: Timer Subsystem | Pending |
+| TIMER-04 | Phase 3: Timer Subsystem | Pending |
+| TIMER-05 | Phase 3: Timer Subsystem | Pending |
+| UI-01 | Phase 2: Core Game Loop | Pending |
+| UI-02 | Phase 1: Foundation | Pending |
+| UI-03 | Phase 1: Foundation | Pending |
+| UI-04 | Phase 4: Polish & Delight | Pending |
+| UI-05 | Phase 4: Polish & Delight | Pending |
+| UI-06 | Phase 1: Foundation | Pending |
+| DEPLOY-01 | Phase 1: Foundation | Pending |
+| DEPLOY-02 | Phase 1: Foundation | Pending |
+| DEPLOY-03 | Phase 1: Foundation | Pending |
 
 ---
 *Last updated: 2026-03-23 after requirements definition*

@@ -1,1 +1,366 @@
-hello
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Adventure! 🔢</title>
+  <style>
+/* ── Design Tokens ─────────────────────────────────────────── */
+:root {
+  --color-bg:      #FFF9C4;   /* warm yellow — sunny, kid-friendly */
+  --color-primary: #FF6B35;   /* vibrant orange — CTAs and borders */
+  --color-correct: #4CAF50;   /* green — correct feedback, timer full */
+  --color-wrong:   #F44336;   /* red — wrong/game-over, timer low */
+  --color-text:    #2C2C2C;   /* near-black — readable on light backgrounds */
+  --color-card:    #FFFFFF;   /* white card surface */
+  --color-accent:  #7C4DFF;   /* purple — secondary/decorative */
+  --color-timer-mid: #FFC107; /* amber — timer mid-range warning */
+
+  /* Fluid typography — clamp(min, preferred-vw, max) */
+  --font-base:   clamp(18px, 4vw, 24px);
+  --font-large:  clamp(28px, 6vw, 40px);
+  --font-puzzle: clamp(48px, 12vw, 80px);   /* equation display */
+  --font-emoji:  clamp(48px, 12vw, 72px);   /* big decorative emoji */
+  --font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', cursive;
+
+  /* Shape */
+  --radius-card: 24px;
+  --radius-btn:  16px;
+  --gap:         16px;
+}
+
+/* ── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Body — mobile-first, single viewport ───────────────────── */
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-base);
+  background: var(--color-bg);
+  min-height: 100dvh;          /* dvh = dynamic viewport — handles iOS browser chrome */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gap);
+  color: var(--color-text);
+}
+
+/* ── Game card — max 480px, full-width on small screens ─────── */
+.game-card {
+  width: min(480px, 100%);
+  background: var(--color-card);
+  border-radius: var(--radius-card);
+  padding: 32px 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+/* ── Typography ─────────────────────────────────────────────── */
+h1 { font-size: var(--font-large); margin-bottom: 12px; line-height: 1.2; }
+p  { font-size: var(--font-base); margin-bottom: 20px; line-height: 1.5; }
+
+.emoji-big { font-size: var(--font-emoji); margin-bottom: 12px; line-height: 1; }
+
+/* ── Buttons — touch-target minimum 56px (UI-03) ───────────── */
+button {
+  min-height: 56px;
+  min-width: 56px;
+  font-size: var(--font-base);
+  font-family: inherit;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  border: none;
+  padding: 12px 24px;
+  font-weight: 700;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #ffffff;
+  font-size: var(--font-large);
+  padding: 16px 40px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.btn-primary:active { opacity: 0.85; transform: scale(0.98); }
+
+/* ── Inputs — font-size MUST stay ≥ 16px (iOS zoom prevention, UI-02) ── */
+input {
+  font-size: 16px;
+  font-family: inherit;
+}
+
+/* ── Progress row ───────────────────────────────────────────── */
+.progress-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: var(--font-base);
+  font-weight: 700;
+}
+
+/* ── Timer bar ──────────────────────────────────────────────── */
+.timer-bar-track {
+  width: 100%;
+  height: 16px;
+  background: #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.timer-bar-fill {
+  height: 100%;
+  background: var(--color-correct);
+  border-radius: 8px;
+  transition: width 0.2s linear, background 0.4s ease;
+}
+
+/* ── Puzzle equation ────────────────────────────────────────── */
+.puzzle-equation {
+  font-size: var(--font-puzzle);
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin: 24px 0;
+  color: var(--color-text);
+  line-height: 1.1;
+}
+
+/* ── Answer display area (shows tapped digits) ──────────────── */
+.answer-display {
+  font-size: var(--font-large);
+  font-weight: 700;
+  min-height: 56px;
+  border: 3px solid var(--color-primary);
+  border-radius: var(--radius-btn);
+  padding: 8px 16px;
+  letter-spacing: 4px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Numpad grid (UI-03: large targets for ages 5–9) ────────── */
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.numpad-btn {
+  min-height: 64px;    /* larger than 44px minimum for young children */
+  min-width: 64px;
+  font-size: var(--font-large);
+  font-weight: 900;
+  background: var(--color-bg);
+  border: 3px solid var(--color-primary);
+  border-radius: 14px;
+  color: var(--color-text);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.numpad-btn:active { transform: scale(0.93); background: var(--color-primary); color: #fff; }
+
+.numpad-submit {
+  background: var(--color-correct);
+  color: #ffffff;
+  border-color: var(--color-correct);
+  font-size: var(--font-base);
+}
+
+.numpad-clear {
+  background: var(--color-wrong);
+  color: #ffffff;
+  border-color: var(--color-wrong);
+}
+
+/* ── Stars on results screen ────────────────────────────────── */
+.stars {
+  font-size: clamp(32px, 8vw, 48px);
+  margin: 16px 0;
+  letter-spacing: 4px;
+  line-height: 1.3;
+}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- GameController.init() populates this on DOMContentLoaded -->
+  </div>
+
+  <script>
+// ── 1. CONFIG ─────────────────────────────────────────────────
+const CONFIG = {
+  PUZZLE_COUNT: 10,
+  TIMER_SECONDS: 15,
+  MAX_RESULT: 20,         // exclusive: valid answers are 1–19
+  OPERATORS: ['+', '-']
+};
+
+// ── 2. PUZZLE GENERATOR ───────────────────────────────────────
+// Pure function — no DOM access, no side effects. Testable in console.
+const PuzzleGenerator = {
+  generate(count = CONFIG.PUZZLE_COUNT) {
+    const seen = new Set();
+    const puzzles = [];
+
+    while (puzzles.length < count) {
+      const op = Math.random() < 0.5 ? '+' : '-';
+      let a, b;
+
+      if (op === '+') {
+        // Constrain so a + b <= 19 (< MAX_RESULT=20)
+        a = Math.floor(Math.random() * (CONFIG.MAX_RESULT - 1)); // 0–18
+        b = Math.floor(Math.random() * (CONFIG.MAX_RESULT - a)); // 0–(19-a)
+      } else {
+        // Constrain so b <= a, guaranteeing a - b >= 0 (PUZZLE-03)
+        a = Math.floor(Math.random() * CONFIG.MAX_RESULT);       // 0–19
+        b = Math.floor(Math.random() * (a + 1));                 // 0–a
+      }
+
+      const answer = op === '+' ? a + b : a - b;
+
+      // Skip zero-answer puzzles — young children may not recognize 0 as valid
+      if (answer === 0) continue;
+
+      // Dedup — reject if this exact expression already in the current set (PUZZLE-04)
+      const key = `${a}${op}${b}`;
+      if (seen.has(key)) continue;
+
+      seen.add(key);
+      puzzles.push({ operandA: a, operator: op, operandB: b, answer });
+    }
+
+    return puzzles;
+  }
+};
+
+// ── 3. GAME STATE ─────────────────────────────────────────────
+// Phase 2 populates this. Define shape here so other modules can reference it.
+const GameState = {
+  phase: 'START',      // 'START' | 'QUESTION' | 'GAME_OVER' | 'RESULTS'
+  puzzles: [],
+  currentIndex: 0,
+  score: 0,
+  timeRemaining: 0,
+  timerID: null
+};
+
+// ── 4. TIMER CONTROLLER (stub — implemented in Phase 3) ───────
+const TimerController = {
+  start(onTick, onExpire) { /* Phase 3 */ },
+  stop() { /* Phase 3 */ }
+};
+
+// ── 5. UI RENDERER ────────────────────────────────────────────
+// All DOM writes. Receives data as arguments — never reads GameState directly.
+const UIRenderer = {
+  _app: document.getElementById('app'),
+
+  renderStart() {
+    this._app.innerHTML = `
+      <div class="game-card screen-start">
+        <div class="emoji-big">🔢</div>
+        <h1>Math Adventure!</h1>
+        <p>Can you solve <strong>10</strong> puzzles? 🌟</p>
+        <button class="btn-primary" onclick="GameController.startGame()">▶ Play!</button>
+      </div>`;
+  },
+
+  renderQuestion(puzzle, questionNumber, timeRemaining) {
+    const pct = Math.round((timeRemaining / CONFIG.TIMER_SECONDS) * 100);
+    this._app.innerHTML = `
+      <div class="game-card screen-question">
+        <div class="progress-row">
+          <span>Question ${questionNumber} / ${CONFIG.PUZZLE_COUNT} ⭐</span>
+          <span>Score: ${GameState.score}</span>
+        </div>
+        <div class="timer-bar-track">
+          <div id="timer-fill" class="timer-bar-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="puzzle-equation">${puzzle.operandA} ${puzzle.operator} ${puzzle.operandB} = ?</div>
+        <div id="answer-display" class="answer-display">__</div>
+        <div class="numpad">
+          ${[1,2,3,4,5,6,7,8,9].map(n =>
+            `<button class="numpad-btn" onclick="GameController.digitPress(${n})">${n}</button>`
+          ).join('')}
+          <button class="numpad-btn numpad-clear" onclick="GameController.backspace()">⌫</button>
+          <button class="numpad-btn" onclick="GameController.digitPress(0)">0</button>
+          <button class="numpad-btn numpad-submit" onclick="GameController.checkAnswer()">✅</button>
+        </div>
+      </div>`;
+  },
+
+  // Updates ONLY the timer bar — does NOT re-render the puzzle or numpad.
+  // Called on every timer tick in Phase 3. Critical: never call renderQuestion() from a tick.
+  updateTimer(timeRemaining) {
+    const fill = document.getElementById('timer-fill');
+    if (!fill) return;
+    const pct = Math.max(0, Math.round((timeRemaining / CONFIG.TIMER_SECONDS) * 100));
+    fill.style.width = pct + '%';
+    // Color shift: green (>60%) → amber (30–60%) → red (<30%)
+    if (pct > 60)      fill.style.background = 'var(--color-correct)';
+    else if (pct > 30) fill.style.background = 'var(--color-timer-mid)';
+    else               fill.style.background = 'var(--color-wrong)';
+  },
+
+  renderGameOver(score) {
+    this._app.innerHTML = `
+      <div class="game-card screen-gameover">
+        <div class="emoji-big">😢</div>
+        <h1>Game Over!</h1>
+        <p>You solved <strong>${score}</strong> puzzle${score !== 1 ? 's' : ''}! 🌟</p>
+        <button class="btn-primary" onclick="GameController.playAgain()">🔄 Try Again</button>
+      </div>`;
+  },
+
+  renderResults(score) {
+    const starCount = Math.max(1, Math.ceil(score / 2));   // 1–5 stars for scores 1–10
+    const stars = '⭐'.repeat(starCount);
+    this._app.innerHTML = `
+      <div class="game-card screen-results">
+        <div class="emoji-big">🎉</div>
+        <h1>You Win!</h1>
+        <p>All <strong>10</strong> puzzles solved! 🏆</p>
+        <div class="stars">${stars}</div>
+        <button class="btn-primary" onclick="GameController.playAgain()">🔄 Play Again</button>
+      </div>`;
+  }
+};
+
+// ── 6. GAME CONTROLLER ────────────────────────────────────────
+// The ONLY module that may mutate GameState. Drives all state transitions.
+const GameController = {
+  init() {
+    UIRenderer.renderStart();
+  },
+
+  // ── Phase 2 stubs ──────────────────────────────────────────
+  startGame()    { /* Phase 2: generate puzzles, reset state, show first question */ },
+  showQuestion() { /* Phase 2: render current puzzle, start timer */ },
+  checkAnswer()  { /* Phase 2: read answer display, validate, transition state */ },
+  digitPress(n)  { /* Phase 2: append digit n to answer display */ },
+  backspace()    { /* Phase 2: remove last digit from answer display */ },
+
+  // ── Phase 3 stub ───────────────────────────────────────────
+  onTimeout()    { /* Phase 3: timer expired — game over */ },
+
+  // ── Minimal implementation for Phase 1 testing ─────────────
+  playAgain() {
+    UIRenderer.renderStart();
+  }
+};
+
+// ── 7. BOOT ───────────────────────────────────────────────────
+GameController.init();
+  </script>
+</body>
+</html>

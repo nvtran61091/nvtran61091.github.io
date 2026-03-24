@@ -238,7 +238,7 @@ input {
 const CONFIG = {
   PUZZLE_COUNT: 10,
   TIMER_SECONDS: 15,
-  MAX_RESULT: 20,         // exclusive: valid answers are 1–19
+  MAX_RESULT: 10,         // exclusive: valid answers are 1–9
   OPERATORS: ['+', '-']
 };
 
@@ -378,10 +378,28 @@ const GameState = {
   timerID: null
 };
 
-// ── 4. TIMER CONTROLLER (stub — implemented in Phase 3) ───────
+// ── 4. TIMER CONTROLLER ───────────────────────────────────────
 const TimerController = {
-  start(onTick, onExpire) { /* Phase 3 */ },
-  stop() { /* Phase 3 */ }
+  _id: null,
+  start(onTick, onExpire) {
+    this.stop();                              // always clear before (re-)starting
+    GameState.timeRemaining = CONFIG.TIMER_SECONDS;
+    this._id = setInterval(() => {
+      GameState.timeRemaining--;
+      if (GameState.timeRemaining <= 0) {
+        this.stop();
+        onExpire();
+      } else {
+        onTick(GameState.timeRemaining);
+      }
+    }, 1000);
+  },
+  stop() {
+    if (this._id !== null) {
+      clearInterval(this._id);
+      this._id = null;
+    }
+  }
 };
 
 // ── 5. UI RENDERER ────────────────────────────────────────────
@@ -496,11 +514,16 @@ const GameController = {
   showQuestion() {
     const puzzle = GameState.puzzles[GameState.currentIndex];
     UIRenderer.renderQuestion(puzzle, GameState.currentIndex + 1, CONFIG.TIMER_SECONDS);
+    TimerController.start(
+      (remaining) => UIRenderer.updateTimer(remaining),
+      () => this.onTimeout()
+    );
   },
   checkAnswer() {
     const display = document.getElementById('answer-display');
     const val = display ? display.dataset.value || '' : '';
     if (!val) return;
+    TimerController.stop();
     SoundManager.click();
     const puzzle = GameState.puzzles[GameState.currentIndex];
     if (parseInt(val, 10) === puzzle.answer) {
@@ -542,11 +565,17 @@ const GameController = {
     display.textContent = next || '__';
   },
 
-  // ── Phase 3 stub ───────────────────────────────────────────
-  onTimeout()    { /* Phase 3: timer expired — game over */ },
+  // ── Timer expired ──────────────────────────────────────────
+  onTimeout() {
+    SoundManager.stopBg();
+    SoundManager.gameOver();
+    GameState.phase = 'GAME_OVER';
+    UIRenderer.renderGameOver(GameState.score, GameState.puzzles[GameState.currentIndex]);
+  },
 
   // ── Minimal implementation for Phase 1 testing ─────────────
   playAgain() {
+    TimerController.stop();
     SoundManager.stopBg();
     SoundManager.click();
     UIRenderer.renderStart();

@@ -1,65 +1,81 @@
 # Kids Math Game
 
-## Overview
+## What This Is
 
-A fun, browser-based math game designed for young children. The game presents 10 random addition and subtraction puzzles (results always < 20) with a 15-second countdown timer per puzzle. Wrong answer or timeout = game over. Completing all 10 shows a score screen with a play-again button. Built with plain HTML + JavaScript only, hosted on GitHub Pages.
-
-## Goals
-
-- Give kids a fun, engaging way to practice basic math
-- Keep it dead simple: no setup, no login, just open and play
-- Deploy instantly via GitHub Pages (single `index.html`)
-
-## Target User
-
-Young children (ages 5–9), likely playing on a parent's phone or tablet.
+A Vietnamese-language, browser-based math game for young children (ages 5–9). Players answer 10 addition/subtraction puzzles using an on-screen numpad. A 15-second countdown timer adds excitement. Wrong answer or timeout ends the game immediately. Built as a single `index.html` deployed on GitHub Pages — no install, no login, open and play.
 
 ## Core Value
 
 A delightful, no-friction math game that kids can play instantly in any browser.
 
+## Current State
+
+**Shipped: v1.0 MVP** (2026-03-24)
+- `index.html` (~590 lines): full game playable end-to-end
+- Web Audio API sounds: background music, correct chime, wrong buzz, win fanfare
+- Vietnamese UI throughout (`lang="vi"`)
+- Live at: https://nvtran61091.github.io
+- Puzzle results capped at 9 (not 20 as originally planned)
+- Countdown timer implemented and working
+
 ## Tech Stack
 
-- Plain HTML5
-- Vanilla JavaScript (no frameworks, no build tools)
-- Inline CSS for styling
-- Single `index.html` file — deploys directly to GitHub Pages
+- Plain HTML5 + Vanilla JavaScript (ES2020)
+- Inline CSS with CSS custom properties
+- Web Audio API (no external files)
+- Single `index.html` — GitHub Pages, zero build step
+
+## Target User
+
+Young children (ages 5–9), playing on a parent's phone or tablet.
 
 ## Requirements
 
-### Validated
+### Validated — v1.0
 
-(None yet — ship to validate)
+- ✓ Single `index.html`, no external dependencies — v1.0
+- ✓ Puzzle generation: addition + subtraction, non-negative, results 1–9 — v1.0
+- ✓ Subtraction constraint (b ≤ a, never negative answer) — v1.0
+- ✓ 10 unique puzzles per session (dedup Set) — v1.0
+- ✓ Large readable fonts (clamp-based fluid typography) — v1.0
+- ✓ Touch targets ≥ 64px (numpad buttons) — v1.0
+- ✓ Responsive layout: mobile + desktop (min(480px,100%)) — v1.0
+- ✓ On-screen numpad input (no iOS keyboard popup) — v1.0
+- ✓ Backspace / empty-submit guard — v1.0
+- ✓ 15-second countdown timer with color bar — v1.0
+- ✓ Timeout → game over with correct answer reveal — v1.0
+- ✓ Wrong answer → game over — v1.0
+- ✓ Correct answer progression through 10 puzzles — v1.0
+- ✓ Results screen with stars and all 10 answers — v1.0
+- ✓ Play Again fully resets state — v1.0
+- ✓ Sound effects + background music (Web Audio API) — v1.0
+- ✓ Vietnamese labels throughout — v1.0
 
-### Active
+### Active — v1.1
 
-- [ ] Generate 10 random math puzzles per game (addition and subtraction only)
-- [ ] All puzzle results are less than 20 (and operands are non-negative)
-- [ ] Each puzzle has a 15-second countdown timer visible to the player
-- [ ] Timer expiring = game over immediately
-- [ ] Player enters a numeric answer and submits
-- [ ] Correct answer advances to the next puzzle
-- [ ] Wrong answer = game over immediately
-- [ ] After all 10 puzzles solved, show final score + "Play Again" button
-- [ ] Game over screen shows score + "Play Again" button
-- [ ] Fun emojis / kid-friendly symbols used throughout UI
-- [ ] Fully self-contained in a single `index.html` (no external dependencies)
+- [ ] Visible positive feedback animation on correct answer (green flash < 300ms)
+- [ ] Celebratory results screen enhancement (star rating)
 
 ### Out of Scope
 
-- Multiple difficulty levels — keep it simple for v1
+- Multiple difficulty levels — keep simple
 - User accounts / leaderboard — no backend
-- Sound effects — avoids autoplay restrictions
-- Multiplication / division — too advanced for target age
+- Multiplication / division — too advanced for ages 5–9
+- Timer pause on tab switch — defer to v2
+- External fonts / icon libraries — single-file constraint
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Single index.html | GitHub Pages simplicity, zero build step | — Pending |
-| Results < 20 | Age-appropriate math for 5–9 year olds | — Pending |
-| Game over on wrong answer | Adds tension and fun; keeps sessions short | — Pending |
-| 15-second timer | Long enough for young kids, short enough to feel exciting | — Pending |
+| Single index.html | GitHub Pages simplicity, zero build step | ✓ Works well |
+| Results < 10 (not 20) | User adjusted: simpler for young kids | ✓ Better fit |
+| Game over on wrong answer | Adds tension; keeps sessions short | ✓ Good |
+| 15-second timer | Long enough for kids, short enough to feel exciting | ✓ Good |
+| Web Audio API (no files) | No external assets, no autoplay restriction | ✓ Works on all browsers |
+| Vietnamese UI | User's language preference | ✓ Shipped |
+| On-screen numpad | Avoids iOS keyboard popup; touch-friendly | ✓ Works well |
+| Zero-answer filter | Young kids may not recognize 0 as valid answer | ✓ Good UX |
 
 ---
-*Last updated: 2026-03-23 after initialization*
+*Last updated: 2026-03-24 after v1.0 milestone*

@@ -130,6 +130,56 @@ input {
   line-height: 1.1;
 }
 
+/* ── Tally marks visual aid (sticks above each number) ──────── */
+.puzzle-visual {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(8px, 3vw, 20px);
+  margin: 16px 0 8px;
+}
+
+.puzzle-part {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.tally-marks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  min-height: clamp(36px, 9vw, 56px);
+  align-items: center;
+  max-width: clamp(120px, 30vw, 180px);
+}
+
+.tally-stick {
+  display: inline-block;
+  width: clamp(28px, 7vw, 44px);
+  height: clamp(28px, 7vw, 44px);
+  border-radius: 6px;
+}
+
+.tally-stick.color-a { background: var(--color-accent); }
+.tally-stick.color-b { background: var(--color-primary); }
+
+.puzzle-op {
+  font-size: var(--font-puzzle);
+  font-weight: 900;
+  color: var(--color-primary);
+  line-height: 1;
+  align-self: center;
+}
+
+.puzzle-num {
+  font-size: var(--font-puzzle);
+  font-weight: 900;
+  line-height: 1;
+}
+
 /* ── Answer display area (shows tapped digits) ──────────────── */
 .answer-display {
   font-size: var(--font-large);
@@ -404,6 +454,15 @@ const TimerController = {
 
 // ── 5. UI RENDERER ────────────────────────────────────────────
 // All DOM writes. Receives data as arguments — never reads GameState directly.
+
+// Renders n colored vertical sticks as tally marks above a number
+function renderTally(n, colorClass = 'color-a') {
+  if (n <= 0) return '<div class="tally-marks"></div>';
+  return `<div class="tally-marks">${
+    Array.from({length: n}, () => `<span class="tally-stick ${colorClass}"></span>`).join('')
+  }</div>`;
+}
+
 const UIRenderer = {
   _app: document.getElementById('app'),
 
@@ -428,7 +487,18 @@ const UIRenderer = {
         <div class="timer-bar-track">
           <div id="timer-fill" class="timer-bar-fill" style="width:${pct}%"></div>
         </div>
-        <div class="puzzle-equation">${puzzle.operandA} ${puzzle.operator} ${puzzle.operandB} = ?</div>
+        <div class="puzzle-visual">
+          <div class="puzzle-part">
+            ${renderTally(puzzle.operandA, 'color-a')}
+            <div class="puzzle-num">${puzzle.operandA}</div>
+          </div>
+          <div class="puzzle-op">${puzzle.operator}</div>
+          <div class="puzzle-part">
+            ${renderTally(puzzle.operandB, 'color-b')}
+            <div class="puzzle-num">${puzzle.operandB}</div>
+          </div>
+          <div class="puzzle-op">= ?</div>
+        </div>
         <div id="answer-display" class="answer-display">__</div>
         <div class="numpad">
           ${[1,2,3,4,5,6,7,8,9].map(n =>
@@ -457,8 +527,18 @@ const UIRenderer = {
   renderGameOver(score, missedPuzzle) {
     const missed = missedPuzzle
       ? `<div class="answer-reveal">
-           <p>Câu hỏi: <strong>${missedPuzzle.operandA} ${missedPuzzle.operator} ${missedPuzzle.operandB} = ?</strong></p>
-           <p>Đáp án đúng: <span class="correct-answer">✅ ${missedPuzzle.answer}</span></p>
+           <div class="puzzle-visual" style="margin:8px 0 4px">
+             <div class="puzzle-part">
+               ${renderTally(missedPuzzle.operandA, 'color-a')}
+               <div class="puzzle-num" style="font-size:var(--font-large)">${missedPuzzle.operandA}</div>
+             </div>
+             <div class="puzzle-op" style="font-size:var(--font-large)">${missedPuzzle.operator}</div>
+             <div class="puzzle-part">
+               ${renderTally(missedPuzzle.operandB, 'color-b')}
+               <div class="puzzle-num" style="font-size:var(--font-large)">${missedPuzzle.operandB}</div>
+             </div>
+             <div class="puzzle-op" style="font-size:var(--font-large)">= <span class="correct-answer">${missedPuzzle.answer}</span></div>
+           </div>
          </div>`
       : '';
     this._app.innerHTML = `

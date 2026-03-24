@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Math Adventure! 🔢</title>
+  <title>Toán Vui! 🔢</title>
   <style>
 /* ── Design Tokens ─────────────────────────────────────────── */
 :root {
@@ -269,9 +269,9 @@ const UIRenderer = {
     this._app.innerHTML = `
       <div class="game-card screen-start">
         <div class="emoji-big">🔢</div>
-        <h1>Math Adventure!</h1>
-        <p>Can you solve <strong>10</strong> puzzles? 🌟</p>
-        <button class="btn-primary" onclick="GameController.startGame()">▶ Play!</button>
+        <h1>Toán Vui!</h1>
+        <p>Bạn có thể giải <strong>10</strong> câu đố không? 🌟</p>
+        <button class="btn-primary" onclick="GameController.startGame()">▶ Chơi Thôi!</button>
       </div>`;
   },
 
@@ -280,8 +280,8 @@ const UIRenderer = {
     this._app.innerHTML = `
       <div class="game-card screen-question">
         <div class="progress-row">
-          <span>Question ${questionNumber} / ${CONFIG.PUZZLE_COUNT} ⭐</span>
-          <span>Score: ${GameState.score}</span>
+          <span>Câu ${questionNumber} / ${CONFIG.PUZZLE_COUNT} ⭐</span>
+          <span>Điểm: ${GameState.score}</span>
         </div>
         <div class="timer-bar-track">
           <div id="timer-fill" class="timer-bar-fill" style="width:${pct}%"></div>
@@ -316,9 +316,9 @@ const UIRenderer = {
     this._app.innerHTML = `
       <div class="game-card screen-gameover">
         <div class="emoji-big">😢</div>
-        <h1>Game Over!</h1>
-        <p>You solved <strong>${score}</strong> puzzle${score !== 1 ? 's' : ''}! 🌟</p>
-        <button class="btn-primary" onclick="GameController.playAgain()">🔄 Try Again</button>
+        <h1>Thua Rồi!</h1>
+        <p>Bạn đã giải <strong>${score}</strong> câu đố! 🌟</p>
+        <button class="btn-primary" onclick="GameController.playAgain()">🔄 Thử Lại</button>
       </div>`;
   },
 
@@ -328,10 +328,10 @@ const UIRenderer = {
     this._app.innerHTML = `
       <div class="game-card screen-results">
         <div class="emoji-big">🎉</div>
-        <h1>You Win!</h1>
-        <p>All <strong>10</strong> puzzles solved! 🏆</p>
+        <h1>Thắng Rồi!</h1>
+        <p>Giải xong <strong>10</strong> câu đố! 🏆</p>
         <div class="stars">${stars}</div>
-        <button class="btn-primary" onclick="GameController.playAgain()">🔄 Play Again</button>
+        <button class="btn-primary" onclick="GameController.playAgain()">🔄 Chơi Lại</button>
       </div>`;
   }
 };

@@ -189,6 +189,43 @@ input {
   letter-spacing: 4px;
   line-height: 1.3;
 }
+
+/* ── Answer reveal (game over — missed puzzle) ──────────────── */
+.answer-reveal {
+  background: #fff3e0;
+  border: 2px solid var(--color-primary);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin: 12px 0 16px;
+  font-size: var(--font-base);
+  line-height: 1.6;
+}
+.correct-answer {
+  color: var(--color-correct);
+  font-weight: 900;
+  font-size: var(--font-large);
+}
+
+/* ── Answers list (results screen — all 10) ─────────────────── */
+.answers-list {
+  text-align: left;
+  margin: 12px 0 16px;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 8px 12px;
+  background: #f9f9f9;
+}
+.answer-row {
+  display: flex;
+  gap: 10px;
+  padding: 4px 0;
+  font-size: clamp(14px, 3.5vw, 18px);
+  border-bottom: 1px solid #ececec;
+}
+.answer-row:last-child { border-bottom: none; }
+.answer-num { color: var(--color-accent); font-weight: 700; min-width: 24px; }
   </style>
 </head>
 <body>
@@ -399,25 +436,41 @@ const UIRenderer = {
     else               fill.style.background = 'var(--color-wrong)';
   },
 
-  renderGameOver(score) {
+  renderGameOver(score, missedPuzzle) {
+    const missed = missedPuzzle
+      ? `<div class="answer-reveal">
+           <p>Câu hỏi: <strong>${missedPuzzle.operandA} ${missedPuzzle.operator} ${missedPuzzle.operandB} = ?</strong></p>
+           <p>Đáp án đúng: <span class="correct-answer">✅ ${missedPuzzle.answer}</span></p>
+         </div>`
+      : '';
     this._app.innerHTML = `
       <div class="game-card screen-gameover">
         <div class="emoji-big">😢</div>
         <h1>Thua Rồi!</h1>
         <p>Bạn đã giải <strong>${score}</strong> câu đố! 🌟</p>
+        ${missed}
         <button class="btn-primary" onclick="GameController.playAgain()">🔄 Thử Lại</button>
       </div>`;
   },
 
-  renderResults(score) {
-    const starCount = Math.max(1, Math.ceil(score / 2));   // 1–5 stars for scores 1–10
+  renderResults(score, puzzles) {
+    const starCount = Math.max(1, Math.ceil(score / 2));
     const stars = '⭐'.repeat(starCount);
+    const answerList = puzzles
+      ? puzzles.map((p, i) =>
+          `<div class="answer-row">
+             <span class="answer-num">${i + 1}.</span>
+             <span>${p.operandA} ${p.operator} ${p.operandB} = <strong>${p.answer}</strong></span>
+           </div>`
+        ).join('')
+      : '';
     this._app.innerHTML = `
       <div class="game-card screen-results">
         <div class="emoji-big">🎉</div>
         <h1>Thắng Rồi!</h1>
         <p>Giải xong <strong>10</strong> câu đố! 🏆</p>
         <div class="stars">${stars}</div>
+        ${answerList ? `<div class="answers-list">${answerList}</div>` : ''}
         <button class="btn-primary" onclick="GameController.playAgain()">🔄 Chơi Lại</button>
       </div>`;
   }
@@ -458,7 +511,7 @@ const GameController = {
         SoundManager.stopBg();
         SoundManager.win();
         GameState.phase = 'RESULTS';
-        UIRenderer.renderResults(GameState.score);
+        UIRenderer.renderResults(GameState.score, GameState.puzzles);
       } else {
         this.showQuestion();
       }
@@ -466,7 +519,7 @@ const GameController = {
       SoundManager.stopBg();
       SoundManager.gameOver();
       GameState.phase = 'GAME_OVER';
-      UIRenderer.renderGameOver(GameState.score);
+      UIRenderer.renderGameOver(GameState.score, GameState.puzzles[GameState.currentIndex]);
     }
   },
   digitPress(n) {

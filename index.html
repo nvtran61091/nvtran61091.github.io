@@ -205,6 +205,93 @@ const CONFIG = {
   OPERATORS: ['+', '-']
 };
 
+// ── 1.5. SOUND MANAGER (Web Audio API — no external files) ────
+const SoundManager = (() => {
+  let ctx = null;
+  let bgNode = null, bgGain = null;
+
+  function getCtx() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    return ctx;
+  }
+
+  function tone(freq, type, startTime, duration, gainVal, fadeOut) {
+    const ac = getCtx();
+    const osc = ac.createOscillator();
+    const g   = ac.createGain();
+    osc.connect(g); g.connect(ac.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, startTime);
+    g.gain.setValueAtTime(gainVal, startTime);
+    if (fadeOut) g.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    osc.start(startTime);
+    osc.stop(startTime + duration + 0.02);
+  }
+
+  // Correct answer: bright ascending chime C5→E5→G5
+  function correct() {
+    const ac = getCtx(), t = ac.currentTime;
+    [[523, 0], [659, 0.12], [784, 0.24]].forEach(([f, d]) =>
+      tone(f, 'sine', t + d, 0.35, 0.4, true));
+  }
+
+  // Wrong answer: descending buzz
+  function wrong() {
+    const ac = getCtx(), t = ac.currentTime;
+    tone(220, 'sawtooth', t,      0.15, 0.35, true);
+    tone(180, 'sawtooth', t+0.15, 0.25, 0.35, true);
+  }
+
+  // Game over: sad descending
+  function gameOver() {
+    const ac = getCtx(), t = ac.currentTime;
+    [[392, 0], [349, 0.18], [294, 0.36], [261, 0.56]].forEach(([f, d]) =>
+      tone(f, 'triangle', t + d, 0.28, 0.4, true));
+  }
+
+  // Win fanfare: ascending run + chord
+  function win() {
+    const ac = getCtx(), t = ac.currentTime;
+    [[523,0],[587,0.1],[659,0.2],[698,0.3],[784,0.4],[880,0.55],[1047,0.7]].forEach(([f,d]) =>
+      tone(f, 'sine', t + d, 0.35, 0.45, true));
+    [523, 659, 784, 1047].forEach(f =>
+      tone(f, 'sine', t + 1.1, 0.8, 0.3, true));
+  }
+
+  // Button click: soft tick
+  function click() {
+    const ac = getCtx(), t = ac.currentTime;
+    tone(800, 'sine', t, 0.06, 0.18, true);
+  }
+
+  // Background music: simple looping pentatonic melody
+  const MELODY = [523,659,784,880,784,659,523,392,440,523,659,523,440,392,440,523];
+  let bgTimeout = null, bgStep = 0, bgPlaying = false;
+
+  function playBgStep() {
+    if (!bgPlaying) return;
+    const ac = getCtx();
+    const freq = MELODY[bgStep % MELODY.length];
+    tone(freq, 'sine', ac.currentTime, 0.32, 0.12, true);
+    bgStep++;
+    bgTimeout = setTimeout(playBgStep, 340);
+  }
+
+  function startBg() {
+    if (bgPlaying) return;
+    bgPlaying = true;
+    bgStep = 0;
+    playBgStep();
+  }
+
+  function stopBg() {
+    bgPlaying = false;
+    clearTimeout(bgTimeout);
+  }
+
+  return { correct, wrong, gameOver, win, click, startBg, stopBg };
+})();
+
 // ── 2. PUZZLE GENERATOR ───────────────────────────────────────
 // Pure function — no DOM access, no side effects. Testable in console.
 const PuzzleGenerator = {
@@ -345,6 +432,8 @@ const GameController = {
 
   // ── Phase 2 stubs (minimal wiring for Phase 1 screen preview) ─
   startGame() {
+    SoundManager.click();
+    SoundManager.startBg();
     GameState.puzzles = PuzzleGenerator.generate();
     GameState.currentIndex = 0;
     GameState.score = 0;
@@ -359,22 +448,29 @@ const GameController = {
     const display = document.getElementById('answer-display');
     const val = display ? display.dataset.value || '' : '';
     if (!val) return;
+    SoundManager.click();
     const puzzle = GameState.puzzles[GameState.currentIndex];
     if (parseInt(val, 10) === puzzle.answer) {
+      SoundManager.correct();
       GameState.score++;
       GameState.currentIndex++;
       if (GameState.currentIndex >= CONFIG.PUZZLE_COUNT) {
+        SoundManager.stopBg();
+        SoundManager.win();
         GameState.phase = 'RESULTS';
         UIRenderer.renderResults(GameState.score);
       } else {
         this.showQuestion();
       }
     } else {
+      SoundManager.stopBg();
+      SoundManager.gameOver();
       GameState.phase = 'GAME_OVER';
       UIRenderer.renderGameOver(GameState.score);
     }
   },
   digitPress(n) {
+    SoundManager.click();
     const display = document.getElementById('answer-display');
     if (!display) return;
     const current = display.dataset.value || '';
@@ -384,6 +480,7 @@ const GameController = {
     display.textContent = next;
   },
   backspace() {
+    SoundManager.click();
     const display = document.getElementById('answer-display');
     if (!display) return;
     const current = display.dataset.value || '';
@@ -397,6 +494,8 @@ const GameController = {
 
   // ── Minimal implementation for Phase 1 testing ─────────────
   playAgain() {
+    SoundManager.stopBg();
+    SoundManager.click();
     UIRenderer.renderStart();
   }
 };

@@ -343,12 +343,54 @@ const GameController = {
     UIRenderer.renderStart();
   },
 
-  // ── Phase 2 stubs ──────────────────────────────────────────
-  startGame()    { /* Phase 2: generate puzzles, reset state, show first question */ },
-  showQuestion() { /* Phase 2: render current puzzle, start timer */ },
-  checkAnswer()  { /* Phase 2: read answer display, validate, transition state */ },
-  digitPress(n)  { /* Phase 2: append digit n to answer display */ },
-  backspace()    { /* Phase 2: remove last digit from answer display */ },
+  // ── Phase 2 stubs (minimal wiring for Phase 1 screen preview) ─
+  startGame() {
+    GameState.puzzles = PuzzleGenerator.generate();
+    GameState.currentIndex = 0;
+    GameState.score = 0;
+    GameState.phase = 'QUESTION';
+    this.showQuestion();
+  },
+  showQuestion() {
+    const puzzle = GameState.puzzles[GameState.currentIndex];
+    UIRenderer.renderQuestion(puzzle, GameState.currentIndex + 1, CONFIG.TIMER_SECONDS);
+  },
+  checkAnswer() {
+    const display = document.getElementById('answer-display');
+    const val = display ? display.dataset.value || '' : '';
+    if (!val) return;
+    const puzzle = GameState.puzzles[GameState.currentIndex];
+    if (parseInt(val, 10) === puzzle.answer) {
+      GameState.score++;
+      GameState.currentIndex++;
+      if (GameState.currentIndex >= CONFIG.PUZZLE_COUNT) {
+        GameState.phase = 'RESULTS';
+        UIRenderer.renderResults(GameState.score);
+      } else {
+        this.showQuestion();
+      }
+    } else {
+      GameState.phase = 'GAME_OVER';
+      UIRenderer.renderGameOver(GameState.score);
+    }
+  },
+  digitPress(n) {
+    const display = document.getElementById('answer-display');
+    if (!display) return;
+    const current = display.dataset.value || '';
+    if (current.length >= 2) return;
+    const next = current + n;
+    display.dataset.value = next;
+    display.textContent = next;
+  },
+  backspace() {
+    const display = document.getElementById('answer-display');
+    if (!display) return;
+    const current = display.dataset.value || '';
+    const next = current.slice(0, -1);
+    display.dataset.value = next;
+    display.textContent = next || '__';
+  },
 
   // ── Phase 3 stub ───────────────────────────────────────────
   onTimeout()    { /* Phase 3: timer expired — game over */ },

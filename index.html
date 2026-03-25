@@ -387,7 +387,7 @@ const PuzzleGenerator = {
     const puzzles = [];
 
     while (puzzles.length < count) {
-      const op = Math.random() < 0.5 ? '+' : '-';
+      const op = CONFIG.OPERATORS[Math.floor(Math.random() * CONFIG.OPERATORS.length)];
       let a, b;
 
       if (op === '+') {
